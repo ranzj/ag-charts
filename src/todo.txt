@@ -41,3 +41,9 @@
  - Themes?
  - Interactions?
  - Captions?
+
+
+
+// Scales
+// - Linear (Polylinear?)
+// - Ordinal

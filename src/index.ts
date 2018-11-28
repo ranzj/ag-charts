@@ -9,7 +9,8 @@ import * as topojson from 'topojson-client';
 import * as canvas from './Canvas';
 import AnimationQueue from './AnimationQueue';
 import easings from './Easings';
-import './decoratorTest';
+import {Color} from "d3";
+// import './decoratorTest';
 
 document.addEventListener('DOMContentLoaded', main);
 
@@ -52,8 +53,8 @@ function main() {
 }
 
 function onDataReady(records: DatePrice[]) {
-    setupChart(records);
-    setupD3Morph();
+    // setupChart(records);
+    // setupD3Morph();
     // setupCustomMorph();
     // setupCubicMorph();
     // setupCustomCubicMorph();
@@ -62,6 +63,19 @@ function onDataReady(records: DatePrice[]) {
     // setupSliderMorph();
     // setupGeoCanvas();
     // setupGlobe();
+}
+
+function d3Sandbox() {
+    (<any>window).d3 = d3;
+    const i = d3.scaleLinear<string>().domain([0, 1]).range(['red', 'green']);
+    const ii = d3.scaleLinear<Color>().domain([0, 10]).range([d3.rgb('red'), d3.rgb('blue')]);
+    console.log(i(0));
+    console.log(i(0.5));
+    console.log(i(1));
+
+    console.log(ii(0));
+    console.log(ii(0.5));
+    console.log(ii(1));
 }
 
 function setupChart(records: DatePrice[]) {
