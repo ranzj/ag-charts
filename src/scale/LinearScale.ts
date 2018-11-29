@@ -16,7 +16,9 @@ function deinterpolateNumber(a: number, b: number): Deinterpolator<number> {
 }
 
 export default function scaleLinear() {
-    return new LinearScale<number>(reinterpolateNumber, deinterpolateNumber, naturalOrder);
+    const scale = new LinearScale<number>(reinterpolateNumber, deinterpolateNumber, naturalOrder);
+    scale.range = [0, 1];
+    return scale;
 }
 
 export class LinearScale<R> extends ContinuousScale<R> {

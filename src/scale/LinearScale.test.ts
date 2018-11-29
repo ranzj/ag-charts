@@ -1,32 +1,65 @@
-import scaleLinear, {LinearScale, reinterpolateNumber} from "./LinearScale";
+import scaleLinear, {LinearScale} from "./LinearScale";
 
-test('LinearScale', () => {
-    const linearScale = scaleLinear();
+test('domain', () => {
+   const scale = scaleLinear();
 
-    linearScale.domain = [-100, 100];
-    linearScale.range = [0, 100];
+   expect(scale.domain).toEqual([0, 1]);
+   scale.domain = [5, 10];
+   expect(scale.domain).toEqual([5, 10]);
+});
 
-    expect(linearScale.convert(-100)).toBe(0);
-    expect(linearScale.convert(0)).toBe(50);
-    expect(linearScale.convert(100)).toBe(100);
+test('range', () => {
+    const scale = scaleLinear();
 
-    expect(linearScale.invert(50)).toBe(0);
-    expect(linearScale.invert(0)).toBe(-100);
+    expect(scale.range).toEqual([0, 1]);
+    scale.range = [5, 10];
+    expect(scale.range).toEqual([5, 10]);
+});
 
-    // Polylinear scale.
+test('convert linear', () => {
+    const scale = scaleLinear();
 
-    const polyLinearScale = scaleLinear();
+    scale.domain = [-100, 100];
+    scale.range = [0, 100];
 
-    polyLinearScale.domain = [-1, 0, 1];
-    polyLinearScale.range = [0, 100, 300];
+    expect(scale.convert(-100)).toBe(0);
+    expect(scale.convert(0)).toBe(50);
+    expect(scale.convert(100)).toBe(100);
+});
 
-    expect(polyLinearScale.convert(-1)).toBe(0);
-    expect(polyLinearScale.convert(-0.5)).toBe(50);
-    expect(polyLinearScale.convert(0)).toBe(100);
-    expect(polyLinearScale.convert(0.5)).toBe(200);
-    expect(polyLinearScale.convert(1)).toBe(300);
+test('invert linear', () => {
+    const scale = scaleLinear();
 
-    expect(polyLinearScale.invert(50)).toBe(-0.5);
-    expect(polyLinearScale.invert(100)).toBe(0);
-    expect(polyLinearScale.invert(300)).toBe(1);
+    scale.domain = [-100, 100];
+    scale.range = [0, 100];
+
+    expect(scale.invert(50)).toBe(0);
+    expect(scale.invert(0)).toBe(-100);
+    expect(scale.invert(75)).toBe(50);
+});
+
+test('convert polylinear', () => {
+    const scale = scaleLinear();
+
+    scale.domain = [-1, 0, 1];
+    scale.range = [0, 100, 300];
+
+    expect(scale.convert(-1)).toBe(0);
+    expect(scale.convert(-0.5)).toBe(50);
+    expect(scale.convert(0)).toBe(100);
+    expect(scale.convert(0.5)).toBe(200);
+    expect(scale.convert(1)).toBe(300);
+});
+
+test('invert polylinear', () => {
+    const scale = scaleLinear();
+
+    scale.domain = [-1, 0, 1];
+    scale.range = [0, 100, 300];
+
+    expect(scale.invert(50)).toBe(-0.5);
+    expect(scale.invert(100)).toBe(0);
+    expect(scale.invert(300)).toBe(1);
+    expect(scale.invert(200)).toBe(0.5);
+    expect(scale.invert(250)).toBe(0.75);
 });
