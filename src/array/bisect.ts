@@ -8,7 +8,7 @@ export function bisectRight<T>(list: T[], x: T, comparator: Comparator<T>, low: 
     let lo = low;
     let hi = high;
     while (lo < hi) {
-        const mid = (lo + hi) / 2;
+        const mid = (lo + hi) >> 1;
         if (comparator(list[mid], x) > 0) // list[mid] > x
             hi = mid;
         else
@@ -21,7 +21,7 @@ export function bisectLeft<T>(list: T[], x: T, comparator: Comparator<T>, low: n
     let lo = low;
     let hi = high;
     while (lo < hi) {
-        const mid = (lo + hi) / 2;
+        const mid = (lo + hi) >> 1;
         if (comparator(list[mid], x) < 0) { // list[mid] < x
             lo = mid + 1;
         } else {

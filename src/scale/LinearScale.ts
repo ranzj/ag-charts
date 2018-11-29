@@ -1,5 +1,6 @@
 import {Deinterpolator, Reinterpolator} from "./Scale";
 import ContinuousScale from "./ContinuousScale";
+import {naturalOrder} from "../array/compare";
 
 export function reinterpolateNumber(a: number, b: number): Reinterpolator<number> {
     const d = b - a;
@@ -15,7 +16,7 @@ function deinterpolateNumber(a: number, b: number): Deinterpolator<number> {
 }
 
 export default function scaleLinear() {
-    return new LinearScale<number>(reinterpolateNumber, deinterpolateNumber);
+    return new LinearScale<number>(reinterpolateNumber, deinterpolateNumber, naturalOrder);
 }
 
 export class LinearScale<R> extends ContinuousScale<R> {
