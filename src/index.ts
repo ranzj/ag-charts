@@ -63,19 +63,32 @@ function onDataReady(records: DatePrice[]) {
     // setupSliderMorph();
     // setupGeoCanvas();
     // setupGlobe();
+    d3Sandbox();
 }
 
 function d3Sandbox() {
     (<any>window).d3 = d3;
-    const i = d3.scaleLinear<string>().domain([0, 1]).range(['red', 'green']);
-    const ii = d3.scaleLinear<Color>().domain([0, 10]).range([d3.rgb('red'), d3.rgb('blue')]);
+
+    // const i = d3.scaleLinear<string>().domain([0, 1]).range(['red', 'green']);
+    // console.log(i(0));
+    // console.log(i(0.5));
+    // console.log(i(1));
+
+    // console.log(i.invert(0.5)); // NaN
+
+    const i = d3.scaleLinear().domain([-100, 100]).range([0, 100]);
     console.log(i(0));
     console.log(i(0.5));
     console.log(i(1));
+    console.log('================');
+    debugger
+    console.log(i.invert(50));
+    console.log(i.invert(0));
 
-    console.log(ii(0));
-    console.log(ii(0.5));
-    console.log(ii(1));
+    // const ii = d3.scaleLinear<Color>().domain([0, 10]).range([d3.rgb('red'), d3.rgb('blue')]);
+    // console.log(ii(0));
+    // console.log(ii(0.5));
+    // console.log(ii(1));
 }
 
 function setupChart(records: DatePrice[]) {
