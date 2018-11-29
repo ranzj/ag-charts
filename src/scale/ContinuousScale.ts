@@ -1,91 +1,12 @@
-import * as d3 from 'd3';
-import {Color} from "d3";
+import {Comparator, naturalOrder} from "../array/compare";
+import Scale, {
+    Deinterpolator, Reinterpolator,
+    DeinterpolatorFactory, ReinterpolatorFactory,
+    PiecewiseDeinterpolatorFactory, PiecewiseReinterpolatorFactory,
+} from './Scale';
+import {bisect} from "../array/bisect";
 
-// const i = d3.scaleLinear().domain([0, 1]).range(['red', 'green']); // perfectly valid JS
-// const i = d3.scaleLinear<string>().domain([0, 1]).range(['red', 'green']);
-//
-// type INumeric = number | { valueOf(): number }; // Symbol.valueOf essentially
-//
-// export interface ScaleContinuousNumeric1<I, O> {
-//     (value: INumeric): O;
-//
-//     invert(value: INumeric): number;
-//
-//     // domain: INumeric[]; // always of type INumeric[]
-//
-//     domain(): number[];
-//     domain(domain: INumeric[]): this;
-//
-// }
-//
-//
-// function ScaleContinuous(value: INumeric) {
-//
-// }
-// ScaleContinuous.invert = function (value: INumeric) { return 0; };
-// ScaleContinuous.domain = function (domain: INumeric[]) {
-//     return this;
-// };
-
-// const fff: ScaleContinuousNumeric1 = ScaleContinuous;
-
-// class Hello {
-//     [Symbol.iterator]() {
-//
-//     }
-// }
-
-// export interface ScaleContinuousNumeric2<D, R> {
-//     convert(value: number): R;
-//     invert(value: R): number;
-//     domain: number[];
-//     domain(domain: number[]): this;
-// }
-
-/*
-
- d3.scaleLinear
-
-export default function linear() {
-  var scale = continuous(deinterpolate, reinterpolate);
-
-  scale.copy = function() {
-    return copy(scale, linear());
-  };
-
-  return linearish(scale);
-  // linearish takes a continuous scale and mixes in `ticks`, `nice` and other methods
-}
-
- */
-
-type Reinterpolator<T> = (t: number) => T;
-type Deinterpolator<T> = (v: T) => number;
-
-type ReinterpolatorFactory<T> = (a: T, b: T) => Reinterpolator<T>;
-type DeinterpolatorFactory<T> = (a: T, b: T) => Deinterpolator<T>;
-
-type PiecewiseReinterpolatorFactory<T> = (a: number[], b: T[], de: DeinterpolatorFactory<number>, re: ReinterpolatorFactory<T>) => Reinterpolator<T>;
-type PiecewiseDeinterpolatorFactory<T> = (a: T[], b: number[], de: DeinterpolatorFactory<T>, re: ReinterpolatorFactory<number>) => Deinterpolator<T>;
-
-
-interface Scale<D, R> {
-    _domain: D[];
-    _range: R[];
-    convert(value: D): R;
-}
-
-abstract class ContinuousScale<R> implements Scale<number, R> {
-    private reinterpolatorFactory: ReinterpolatorFactory<R>;
-    private deinterpolatorFactory?: DeinterpolatorFactory<R>;
-    private rangeComparator?: Comparator<R>;
-
-    private piecewiseReinterpolatorFactory?: PiecewiseReinterpolatorFactory<R>;
-    private piecewiseReinterpolator?: Reinterpolator<R>;
-
-    private piecewiseDeinterpolatorFactory?: PiecewiseDeinterpolatorFactory<R>;
-    private piecewiseDeinterpolator?: Deinterpolator<R>;
-
+export default abstract class ContinuousScale<R> implements Scale<number, R> {
     constructor(reinterpolatorFactory: ReinterpolatorFactory<R>,
                 deinterpolatorFactory?: DeinterpolatorFactory<R>,
                 rangeComparator?: Comparator<R>) {
@@ -93,6 +14,16 @@ abstract class ContinuousScale<R> implements Scale<number, R> {
         this.deinterpolatorFactory = deinterpolatorFactory;
         this.rangeComparator = rangeComparator;
     }
+
+    private readonly reinterpolatorFactory: ReinterpolatorFactory<R>;
+    private readonly deinterpolatorFactory?: DeinterpolatorFactory<R>;
+    private readonly rangeComparator?: Comparator<R>;
+
+    private piecewiseReinterpolatorFactory?: PiecewiseReinterpolatorFactory<R>;
+    private piecewiseReinterpolator?: Reinterpolator<R>;
+
+    private piecewiseDeinterpolatorFactory?: PiecewiseDeinterpolatorFactory<R>;
+    private piecewiseDeinterpolator?: Deinterpolator<R>;
 
     _domain: number[] = [0, 1];
     _range: R[] = [];
@@ -125,15 +56,21 @@ abstract class ContinuousScale<R> implements Scale<number, R> {
             const deinterpolatorFactory = this.clamp
                 ? this.clampDeinterpolatorFactory(this.deinterpolatorOf)
                 : this.deinterpolatorOf;
-            this.piecewiseReinterpolator = this.piecewiseReinterpolatorFactory(this._domain, this._range,
-                deinterpolatorFactory, this.reinterpolatorFactory);
+            this.piecewiseReinterpolator = this.piecewiseReinterpolatorFactory(
+                this._domain, this._range,
+                deinterpolatorFactory, this.reinterpolatorFactory
+            );
         }
-        if (!this.piecewiseReinterpolator) throw new Error('Missing piecewiseReinterpolator');
+        if (!this.piecewiseReinterpolator) {
+            throw new Error('Missing piecewiseReinterpolator');
+        }
         return this.piecewiseReinterpolator(d);
     }
 
     invert(r: R): number {
-        if (!this.deinterpolatorFactory) throw new Error('Missing deinterpolatorFactory');
+        if (!this.deinterpolatorFactory) {
+            throw new Error('Missing deinterpolatorFactory');
+        }
         if (!this.piecewiseDeinterpolator) {
             if (!this.piecewiseDeinterpolatorFactory) {
                 throw new Error('Missing piecewiseDeinterpolatorFactory');
@@ -280,52 +217,11 @@ abstract class ContinuousScale<R> implements Scale<number, R> {
         const td = Array.from( {length: n}, (_, i) => reinterpolatorOf(d[i], d[i+1]) );
 
         return (x) => {
-            if (!this.rangeComparator) throw new Error('Missing rangeComparator');
+            if (!this.rangeComparator) {
+                throw new Error('Missing rangeComparator');
+            }
             const i = bisect(r, x, this.rangeComparator, 1, n) - 1;
             return td[i](rt[i](x));
         }
-    }
-}
-
-type Comparator<T> = (a: T, b: T) => number;
-
-function naturalOrder(a: number, b: number): number {
-    return a - b;
-}
-
-function bisect<T>(list: T[], x: T, comparator: Comparator<T>, lo: number = 0, hi: number = list.length): number {
-    return bisectRight(list, x, comparator, lo, hi)
-}
-
-function bisectRight<T>(list: T[], x: T, comparator: Comparator<T>, low: number = 0, high: number = list.length): number {
-    let lo = low;
-    let hi = high;
-    while (lo < hi) {
-        const mid = (lo + hi) / 2;
-        if (comparator(list[mid], x) > 0)
-            hi = mid;
-        else
-            lo = mid + 1;
-    }
-    return lo;
-}
-
-export function reinterpolateNumber(a: number, b: number): Reinterpolator<number> {
-    const d = b - a;
-    return t => a + d * t;
-}
-
-export class LinearScale<R> extends ContinuousScale<R> {
-    protected deinterpolatorOf(a: number, b: number): Deinterpolator<number> {
-        const d = b - a;
-        if (d === 0 || isNaN(d))
-            return () => d;
-        else
-            return x => (x - a) / d;
-    }
-
-    protected reinterpolatorOf(a: number, b: number): Reinterpolator<number> {
-        const d = b - a;
-        return t => a + d * t;
     }
 }

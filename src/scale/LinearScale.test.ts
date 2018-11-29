@@ -1,4 +1,4 @@
-import { LinearScale, reinterpolateNumber } from "./Scale";
+import {LinearScale, reinterpolateNumber} from "./LinearScale";
 
 test('LinearScale', () => {
     const linearScale = new LinearScale<number>(reinterpolateNumber);
