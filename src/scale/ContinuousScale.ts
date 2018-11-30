@@ -28,8 +28,8 @@ export default abstract class ContinuousScale<R> implements Scale<number, R> {
     _domain: number[] = [0, 1];
     _range: R[] = [];
 
-    set domain(d: number[]) {
-        this._domain = d.slice();
+    set domain(values: number[]) {
+        this._domain = values.slice();
         this.rescale();
     }
 
@@ -37,8 +37,8 @@ export default abstract class ContinuousScale<R> implements Scale<number, R> {
         return this._domain;
     }
 
-    set range(r: R[]) {
-        this._range = r.slice();
+    set range(values: R[]) {
+        this._range = values.slice();
         this.rescale();
     }
 
