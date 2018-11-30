@@ -81,7 +81,6 @@ function d3Sandbox() {
     console.log(i(0.5));
     console.log(i(1));
     console.log('================');
-    debugger
     console.log(i.invert(50));
     console.log(i.invert(0));
 

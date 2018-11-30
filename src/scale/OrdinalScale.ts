@@ -5,7 +5,10 @@ export class OrdinalScale<D, R> implements Scale<D, R> {
     _range: R[] = [];
 
     private index = new Map<D, number>();
-    unknown?: R; // default is undefined === implicit
+    // If `unknown` is set, the `convert` returns the `unknown`, if the value passed to `convert` is
+    // not in the domain. If `unknown` is not set (default), and the value passed to the `convert` is not in
+    // the domain, it is added to the domain.
+    unknown?: R;
 
     convert(value: D): R {
         if (!this.index.has(value)) {

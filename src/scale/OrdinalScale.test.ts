@@ -2,9 +2,10 @@ import {OrdinalScale} from "./OrdinalScale";
 
 test('populating domain', () => {
     const scale = new OrdinalScale();
-    scale.convert('B');
-    scale.convert('C');
-    scale.convert('A');
+
+    expect(scale.convert('B')).toBe(undefined);
+    expect(scale.convert('C')).toBe(undefined);
+    expect(scale.convert('A')).toBe(undefined);
 
     expect(scale.domain).toEqual(['B', 'C', 'A']);
 });
