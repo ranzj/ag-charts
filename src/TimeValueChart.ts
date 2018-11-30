@@ -1,4 +1,4 @@
-import {ScaleContinuousNumeric, scaleLinear, scaleTime} from 'd3-scale';
+import {scaleLinear, scaleTime} from 'd3-scale';
 import { extent } from 'd3-array';
 import { timeFormat } from 'd3-time-format';
 import { format } from 'd3-format';
