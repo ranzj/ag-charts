@@ -1,6 +1,6 @@
 import {OrdinalScale} from "./OrdinalScale";
 
-test('implicit unknown', () => {
+test('implicit unknown (implicit domain construction)', () => {
     const scale = new OrdinalScale();
 
     expect(scale.convert('B')).toBe(undefined);
