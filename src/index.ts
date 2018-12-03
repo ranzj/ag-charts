@@ -6,10 +6,12 @@ import { path as pathInterpolator } from './Interpolator';
 import * as topojson from 'topojson-client';
 // import topoUSA from '../data/topoUSA';
 // import topoGlobe from '../data/topoGlobe';
-import * as canvas from './Canvas';
+import { setDevicePixelRatio } from './Canvas';
 import AnimationQueue from './AnimationQueue';
 import easings from './Easings';
 import {Color} from "d3";
+import scaleLinear from "./scale/LinearScale";
+import {BandScale} from "./scale/BandScale";
 // import './decoratorTest';
 
 document.addEventListener('DOMContentLoaded', main);
@@ -63,7 +65,56 @@ function onDataReady(records: DatePrice[]) {
     // setupSliderMorph();
     // setupGeoCanvas();
     // setupGlobe();
-    d3Sandbox();
+    // d3Sandbox();
+    setupBarChartNoAxes();
+}
+
+function setupBarChartNoAxes() {
+    const records = [
+        {name: 'A', value: 324},
+        {name: 'B', value: 234},
+        {name: 'C', value: 402},
+        {name: 'D', value: 270},
+        {name: 'E', value: 580},
+        {name: 'F', value: 330}
+    ];
+    const n = records.length;
+    const xData = records.map(d => d.name);
+    const yData = records.map(d => d.value);
+    const width = 640;
+    const height = 480;
+
+    const yScale = scaleLinear();
+    yScale.domain = [0, Math.max(...yData)];
+    yScale.range = [height, 0];
+
+    const xScale = new BandScale();
+    xScale.domain = xData;
+    xScale.range = [0, width];
+    xScale.paddingInner = 0.4;
+    xScale.paddingOuter = 0.25;
+    let bandwidth = xScale.bandwidth;
+
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    canvas.style.border = '1px solid black';
+    document.body.appendChild(canvas);
+    setDevicePixelRatio(canvas);
+
+    const ctx = canvas.getContext('2d')!;
+    ctx.font = '14px Verdana';
+
+    for (let i = 0; i < n; i++) {
+        const category = xData[i];
+        const x = xScale.convert(category);
+        const y = yScale.convert(yData[i]);
+        ctx.fillStyle = '#4983B2';
+        ctx.fillRect(x, y, bandwidth, height);
+        ctx.fillStyle = 'yellow';
+        const w = ctx.measureText(category).width;
+        ctx.fillText(category, x + bandwidth / 2 - w / 2, height - 20);
+    }
 }
 
 function d3Sandbox() {
@@ -323,7 +374,7 @@ function setupGlobe() {
             .attr('height', 600),
         ctx = globeCanvas.node()!.getContext('2d')!;
 
-    canvas.setDevicePixelRatio(globeCanvas.node()!);
+    setDevicePixelRatio(globeCanvas.node()!);
 
     // Create and configure a geographic projection
     let projection = d3.geoOrthographic()
