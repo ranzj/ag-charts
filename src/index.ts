@@ -10,7 +10,7 @@ import { setDevicePixelRatio } from './Canvas';
 import AnimationQueue from './AnimationQueue';
 import easings from './Easings';
 import {Color} from "d3";
-import scaleLinear from "./scale/LinearScale";
+import scaleLinear, {LinearScale} from "./scale/LinearScale";
 import {BandScale} from "./scale/BandScale";
 // import './decoratorTest';
 
