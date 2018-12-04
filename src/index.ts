@@ -354,12 +354,12 @@ function setupGeoCanvas() {
     const geoCanvas = d3.select(document.body).append('canvas')
         .attr('width', 960)
         .attr('height', 600);
-    canvas.setDevicePixelRatio(geoCanvas.node()!);
+    setDevicePixelRatio(geoCanvas.node()!);
     const ctx = geoCanvas.node()!.getContext('2d')!;
     const path = d3.geoPath().context(ctx);
 
     ctx.beginPath();
-    path(topojson.mesh(topoUSA));
+    // path(topojson.mesh(topoUSA));
     ctx.stroke();
 }
 
@@ -422,7 +422,7 @@ function setupGlobe() {
 
         // Countries
         ctx.beginPath();
-        pathGenerator(topoGlobe);
+        // pathGenerator(topoGlobe);
         ctx.fillStyle = "#999";
         ctx.fill();
 

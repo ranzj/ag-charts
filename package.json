@@ -8,11 +8,12 @@
     "type-check:watch": "npm run type-check -- --watch",
     "build": "npm run build:types && npm run build:js",
     "build:types": "tsc --emitDeclarationOnly",
-    "build:js": "babel src --out-dir out --extensions \".ts,.tsx\" --source-maps inline",
+    "build:js": "babel src --out-dir out-babel --extensions \".ts,.tsx\" --source-maps inline",
     "bundle": "webpack",
     "test": "jest",
     "testWithCoverage": "jest --coverage"
   },
+  "browserslist": "> 0.25%, not dead",
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -36,6 +37,7 @@
   "dependencies": {
     "@types/d3": "^5.0.1",
     "@types/topojson-client": "^3.0.0",
+    "browserslist": "^4.3.5",
     "d3": "^5.7.0",
     "topojson-client": "^3.0.0"
   }
