@@ -1,4 +1,5 @@
 import Path from './Path';
+import 'whatwg-fetch';
 import { timeParse } from 'd3-time-format';
 import * as d3 from 'd3';
 import TimeValueChart from './TimeValueChart';

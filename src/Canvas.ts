@@ -1,4 +1,4 @@
-const devicePixelRatioSymbol = Symbol();
+const devicePixelRatioSymbol = '__devicePixelRatio'; // Symbol(); // won't work in IE 11
 
 export function getDevicePixelRatio(canvas?: HTMLCanvasElement) {
     if (canvas) {
