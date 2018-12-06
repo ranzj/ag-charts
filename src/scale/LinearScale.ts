@@ -1,6 +1,7 @@
 import {Deinterpolator, Reinterpolator} from "./Scale";
 import ContinuousScale from "./ContinuousScale";
 import {naturalOrder} from "../array/compare";
+import ticks from "../array/ticks";
 
 export class LinearScale<R> extends ContinuousScale<R> {
     protected deinterpolatorOf(a: number, b: number): Deinterpolator<number> {
@@ -14,6 +15,11 @@ export class LinearScale<R> extends ContinuousScale<R> {
     protected reinterpolatorOf(a: number, b: number): Reinterpolator<number> {
         const d = b - a;
         return t => a + d * t;
+    }
+
+    ticks(count = 10) {
+        const d = this._domain;
+        return ticks(d[0], d[d.length - 1], count);
     }
 }
 
