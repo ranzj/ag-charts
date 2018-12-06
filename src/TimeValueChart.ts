@@ -23,16 +23,16 @@ abstract class Sprite implements IRenderable {
     // dirty = false;
 
     canvasAttributes = {
-        fillStyle: <string | CanvasGradient | CanvasPattern>'red',
-        strokeStyle: <string | CanvasGradient | CanvasPattern>'black',
-        lineWidth: <number>2,
-        lineDash: <number[]>[],
-        lineCap: <CanvasLineCap>'butt'
+        fillStyle: 'red' as string | CanvasGradient | CanvasPattern,
+        strokeStyle: 'black' as string | CanvasGradient | CanvasPattern,
+        lineWidth: 2 as number,
+        lineDash: [] as number[],
+        lineCap: 'butt' as CanvasLineCap
     };
 
     render(ctx: CanvasRenderingContext2D) {
         for (const name in this.canvasAttributes) {
-            (<any>ctx)[name] = (<any>this.canvasAttributes)[name];
+            (ctx as any)[name] = (this.canvasAttributes as any)[name];
         }
     }
 }
@@ -230,7 +230,7 @@ export default class TimeValueChart {
     set padding(value: Padding | [number, number, number, number] | number) {
         if (typeof value === 'object') {
             const padding = this._padding;
-            value = <Padding>value;
+            value = value as Padding;
             this._padding = {
                 top: isFinite(value.top) ? value.top : padding.top,
                 right: isFinite(value.right) ? value.right : padding.right,
@@ -299,8 +299,8 @@ export default class TimeValueChart {
             const xField = this._xField;
             const yField = this._yField;
             // TODO: check and throw if invalid
-            const xDomain = <[Date, Date]>extent(this._data, d => <Date>d[xField]);
-            const yDomain = <[number, number]>extent(this._data, d => <number>d[yField]);
+            const xDomain = extent(this._data, d => <Date>d[xField]) as [Date, Date];
+            const yDomain = extent(this._data, d => <number>d[yField]) as [number, number];
 
             this.xScale.domain(xDomain).nice();
             this.yScale.domain(yDomain).nice();
@@ -327,7 +327,7 @@ export default class TimeValueChart {
         // this.linePath
         //     .datum(this._data)
         //     .attr('d', this.lineGenerator)
-        //     .call(<any>this.pathTransition);
+        //     .call(this.pathTransition as any);
 
         const ctx = this.ctx;
         ctx.clearRect(0, 0, this._width, this._height);

@@ -12,6 +12,7 @@ import easings from './Easings';
 import {Color} from "d3";
 import scaleLinear, {LinearScale} from "./scale/LinearScale";
 import {BandScale} from "./scale/BandScale";
+import {Axis} from "./Axis";
 // import './decoratorTest';
 
 document.addEventListener('DOMContentLoaded', main);
@@ -49,13 +50,13 @@ function main() {
                 record.date = parseTime(record.date);
                 record.price = parseFloat(record.price);
             });
-            return <DatePrice[]>json;
+            return json as DatePrice[];
         })
         .then(onDataReady);
 }
 
 function onDataReady(records: DatePrice[]) {
-    (<any>window).d3 = d3;
+    (window as any).d3 = d3;
     // setupChart(records);
     // setupD3Morph();
     // setupCustomMorph();
@@ -68,7 +69,58 @@ function onDataReady(records: DatePrice[]) {
     // setupGlobe();
     // d3Sandbox();
     // setupBarChartNoAxes();
-    showBasicBarChart([32, 12, 27, 17, 23, 28, 16, 14, 20]);
+    // showBasicBarChart([32, 12, 27, 17, 23, 28, 16, 14, 20]);
+    testAxis();
+}
+
+function testAxis() {
+    const ctx = createCanvasContext2D();
+
+    const leftScale = scaleLinear();
+    leftScale.domain = [2, 97];
+    leftScale.range = [500, 0];
+    const leftAxis = new Axis<number>(leftScale);
+    leftAxis.translation = [100, 50];
+    leftAxis.tickWidth = 1;
+    // axis.rotation = -Math.PI / 6;
+    leftAxis.render(ctx);
+
+    {
+        const bottomScale = scaleLinear();
+        bottomScale.domain = [2, 97];
+        bottomScale.range = [0, 707];
+        const bottomAxis = new Axis<number>(bottomScale);
+        bottomAxis.rotation = -Math.PI / 4;
+        bottomAxis.translation = [100, 50];
+        bottomAxis.tickColor = 'red';
+        bottomAxis.lineColor = 'blue';
+        bottomAxis.labelColor = 'green';
+        bottomAxis.render(ctx);
+    }
+
+    {
+        const bottomScale = new BandScale<string>();
+        bottomScale.domain = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
+        bottomScale.range = [0, 500];
+        const bottomAxis = new Axis<string>(bottomScale);
+        bottomAxis.rotation = -Math.PI / 2;
+        bottomAxis.translation = [100, 550];
+        bottomAxis.tickColor = 'red';
+        bottomAxis.lineColor = 'blue';
+        bottomAxis.labelColor = 'green';
+        bottomAxis.render(ctx);
+    }
+}
+
+function createCanvasContext2D(width = 800, height = 600): CanvasRenderingContext2D {
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    canvas.style.border = '1px solid red';
+    // (canvas.style as any).imageRendering = 'pixelated';
+    document.body.appendChild(canvas);
+    setDevicePixelRatio(canvas);
+    return canvas.getContext('2d')!;
 }
 
 function setupBarChartNoAxes() {
@@ -97,14 +149,7 @@ function setupBarChartNoAxes() {
     xScale.paddingOuter = 0.25;
     let bandwidth = xScale.bandwidth;
 
-    const canvas = document.createElement('canvas');
-    canvas.width = width;
-    canvas.height = height;
-    canvas.style.border = '1px solid black';
-    document.body.appendChild(canvas);
-    setDevicePixelRatio(canvas);
-
-    const ctx = canvas.getContext('2d')!;
+    const ctx = createCanvasContext2D(width, height);
     ctx.font = '14px Verdana';
 
     for (let i = 0; i < n; i++) {
@@ -257,7 +302,7 @@ function setupChart(records: DatePrice[]) {
                     row.date = parseTime(row.date);
                     row.close = parseFloat(row.close);
                 });
-                return <{date: Date, close: number}[]>json;
+                return json as {date: Date, close: number}[];
             })
             .then(records => {
                 chart.title = "Apple's stock price";

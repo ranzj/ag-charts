@@ -2,14 +2,14 @@ const devicePixelRatioSymbol = '__devicePixelRatio'; // Symbol(); // won't work 
 
 export function getDevicePixelRatio(canvas?: HTMLCanvasElement) {
     if (canvas) {
-        return (<any>canvas)[devicePixelRatioSymbol] || 1;
+        return (canvas as any)[devicePixelRatioSymbol] || 1;
     }
     return window.devicePixelRatio;
 }
 
 function getOverrides(dpr: number) {
     let depth = 0;
-    return <any>{
+    return {
         save() {
             this.$save();
             depth++;
@@ -29,18 +29,18 @@ function getOverrides(dpr: number) {
             // because we override the `ctx.restore` above and
             // check `depth` there.
         }
-    };
+    } as any;
 }
 
 export function setDevicePixelRatio(canvas: HTMLCanvasElement): number {
-    const canvasObj = <any>canvas;
+    const canvasObj = canvas as any;
     const ctx = canvas.getContext('2d');
     const dpr = getDevicePixelRatio();
     const overrides = getOverrides(dpr);
 
     if (!canvasObj[devicePixelRatioSymbol]) {
         if (ctx) {
-            const ctxObj = <any>ctx;
+            const ctxObj = ctx as any;
             for (const name in overrides) {
                 // Save native methods under prefixed names.
                 ctxObj['$' + name] = ctxObj[name];

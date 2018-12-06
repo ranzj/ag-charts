@@ -312,10 +312,10 @@ export default class Path {
             throw new Error('Fewer than two points or not an even count.');
         }
         else if (n === 2 || t === 0) {
-            return <[number, number]>points.slice(0, 2);
+            return points.slice(0, 2) as [number, number];
         }
         else if (t === 1) {
-            return <[number, number]>points.slice(-2);
+            return points.slice(-2) as [number, number];
         }
         else {
             const newPoints = [];
