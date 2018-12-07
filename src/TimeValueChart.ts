@@ -6,7 +6,7 @@ import { line } from 'd3-shape';
 import * as axis from 'd3-axis';
 // TODO: be explicit about imports (when done prototyping)
 import * as d3 from 'd3';
-import { setDevicePixelRatio } from './Canvas';
+import { applyHdpiOverrides } from './HdpiCanvas';
 
 type Padding = {
     top: number,
@@ -276,7 +276,7 @@ export default class TimeValueChart {
         this.canvas
             .attr('width', this._width)
             .attr('height', this._height);
-        setDevicePixelRatio(this.canvas.node()!);
+        applyHdpiOverrides(this.canvas.node()!);
         this.ctx.resetTransform();
         this.ctx.translate(this._padding.left, this._padding.top);
 

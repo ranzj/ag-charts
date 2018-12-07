@@ -6,7 +6,7 @@ import { path as pathInterpolator } from './Interpolator';
 import * as topojson from 'topojson-client';
 // import topoUSA from '../data/topoUSA';
 // import topoGlobe from '../data/topoGlobe';
-import { setDevicePixelRatio } from './Canvas';
+import { applyHdpiOverrides } from './HdpiCanvas';
 import AnimationQueue from './AnimationQueue';
 import easings from './Easings';
 import {Color} from "d3";
@@ -141,7 +141,7 @@ function createCanvasContext2D(width = 800, height = 600): CanvasRenderingContex
     canvas.style.border = '1px solid red';
     // (canvas.style as any).imageRendering = 'pixelated';
     document.body.appendChild(canvas);
-    setDevicePixelRatio(canvas);
+    applyHdpiOverrides(canvas);
     return canvas.getContext('2d')!;
 }
 
@@ -218,7 +218,7 @@ function showBasicBarChart(data: number[]) {
     // canvas.style.border = '1px solid black';
     canvas.style.zIndex = '100';
     document.body.appendChild(canvas);
-    setDevicePixelRatio(canvas);
+    applyHdpiOverrides(canvas);
 
     const ctx = canvas.getContext('2d')!;
     ctx.font = '14px Verdana';
@@ -516,7 +516,7 @@ function setupGeoCanvas() {
     const geoCanvas = d3.select(document.body).append('canvas')
         .attr('width', 960)
         .attr('height', 600);
-    setDevicePixelRatio(geoCanvas.node()!);
+    applyHdpiOverrides(geoCanvas.node()!);
     const ctx = geoCanvas.node()!.getContext('2d')!;
     const path = d3.geoPath().context(ctx);
 
@@ -536,7 +536,7 @@ function setupGlobe() {
             .attr('height', 600),
         ctx = globeCanvas.node()!.getContext('2d')!;
 
-    setDevicePixelRatio(globeCanvas.node()!);
+    applyHdpiOverrides(globeCanvas.node()!);
 
     // Create and configure a geographic projection
     let projection = d3.geoOrthographic()

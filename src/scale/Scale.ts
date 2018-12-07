@@ -4,7 +4,7 @@ export default interface Scale<D, R> {
     convert(value: D): R;
     invert?(value: R): D;
     ticks?(count: number): D[];
-    bandwidth?: number;
+    readonly bandwidth?: number;
 }
 
 export type Reinterpolator<T> = (t: number) => T;

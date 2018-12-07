@@ -1,5 +1,5 @@
 import Scale from "./scale/Scale";
-import { pixelSnap } from "./util";
+import { pixelSnap, normalizeAngle } from "./util";
 
 // type AxisDomain = number | string | Date | { valueOf(): number};
 // D extends AxisDomain?
@@ -29,18 +29,6 @@ export class Axis<D> implements IRenderable {
     flippedLabels: boolean = false;
     mirroredLabels: boolean = false;
 
-    /**
-     * Normalize the given angle to [0, Math.PI * 2) interval.
-     * @param angle Angle in radians.
-     */
-    normalizeAngle(angle: number): number {
-        const a = Math.PI * 2;
-        angle %= a;
-        angle += a;
-        angle %= a;
-        return angle;
-    }
-
     // To translate or rotate the axis the ctx can be transformed prior to render
     render(ctx: CanvasRenderingContext2D) {
         ctx.save();
@@ -68,7 +56,7 @@ export class Axis<D> implements IRenderable {
                 ctx.moveTo(sideFlag * this.tickSize, r + pxShift);
                 ctx.lineTo(0, r + pxShift);
                 if (this.flippedLabels) {
-                    const rotation = this.normalizeAngle(this.rotation);
+                    const rotation = normalizeAngle(this.rotation);
                     let flipFlag = (rotation >= 0 && rotation <= Math.PI) ? -1 : 1;
 
                     ctx.save();

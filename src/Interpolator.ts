@@ -1,6 +1,6 @@
 import Path from "./Path";
 
-// interface Interpolator {
+// interface IInterpolator {
 //     /**
 //      * Normalizes the `a` and `b` to a common form.
 //      * For example, there may be many different representations
