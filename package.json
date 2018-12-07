@@ -10,6 +10,7 @@
     "build:types": "tsc --emitDeclarationOnly",
     "build:js": "babel src --out-dir out-babel --extensions \".ts,.tsx\" --source-maps inline",
     "bundle": "webpack",
+    "fuse": "node fuse",
     "test": "jest",
     "testWithCoverage": "jest --coverage"
   },
@@ -27,6 +28,7 @@
     "@types/jest": "^23.3.9",
     "@types/node": "^10.12.2",
     "babel-loader": "^8.0.4",
+    "fuse-box": "^3.6.0",
     "jest": "^23.6.0",
     "ts-jest": "^23.10.4",
     "typescript": "^3.1.3",
