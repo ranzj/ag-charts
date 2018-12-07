@@ -122,6 +122,16 @@ function testAxis() {
         axis.render(ctx);
         axis.rotation += Math.PI / 180;
     }, 1000 / 60);
+
+    setTimeout(() => {
+        leftScale.domain = [-100, 200];
+    }, 2000);
+    setTimeout(() => {
+        topAxis.mirroredLabels = false;
+    }, 4000);
+    setTimeout(() => {
+        topAxis.flippedLabels = true;
+    }, 6000);
 }
 
 function createCanvasContext2D(width = 800, height = 600): CanvasRenderingContext2D {

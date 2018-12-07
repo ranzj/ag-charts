@@ -53,7 +53,7 @@ export class Axis<D> implements IRenderable {
             const ticks = scale.ticks!(10);
             const bandwidth = (scale.bandwidth || 0) / 2;
             const tickCount = ticks.length;
-            const pxShift = -this.tickWidth % 2 / 2;
+            const pxShift = this.tickWidth % 2 / 2;
             const sideFlag = this.mirroredLabels ? 1 : -1;
             ctx.lineWidth = this.tickWidth;
             ctx.strokeStyle = this.tickColor;
