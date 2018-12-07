@@ -1,4 +1,5 @@
 import Scale from "./scale/Scale";
+import { pixelSnap } from "./util";
 
 // type AxisDomain = number | string | Date | { valueOf(): number};
 // D extends AxisDomain?
@@ -53,7 +54,7 @@ export class Axis<D> implements IRenderable {
             const ticks = scale.ticks!(10);
             const bandwidth = (scale.bandwidth || 0) / 2;
             const tickCount = ticks.length;
-            const pxShift = this.tickWidth % 2 / 2;
+            const pxShift = pixelSnap(this.tickWidth);
             const sideFlag = this.mirroredLabels ? 1 : -1;
             ctx.lineWidth = this.tickWidth;
             ctx.strokeStyle = this.tickColor;
@@ -85,7 +86,7 @@ export class Axis<D> implements IRenderable {
 
         // Render axis line.
         {
-            const pxShift = -this.lineWidth % 2 / 2;
+            const pxShift = pixelSnap(this.lineWidth, -1);
             ctx.lineWidth = this.lineWidth;
             ctx.strokeStyle = this.lineColor;
             ctx.beginPath();
