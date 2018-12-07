@@ -8,7 +8,7 @@ interface IRenderable {
     render(ctx: CanvasRenderingContext2D): void
 }
 
-export class Axis<D> implements IRenderable {
+export default class Axis<D> implements IRenderable {
     constructor(scale: Scale<D, number>) {
         this.scale = scale;
     }

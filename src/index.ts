@@ -6,13 +6,15 @@ import { path as pathInterpolator } from './Interpolator';
 import * as topojson from 'topojson-client';
 // import topoUSA from '../data/topoUSA';
 // import topoGlobe from '../data/topoGlobe';
-import { applyHdpiOverrides } from './HdpiCanvas';
+import { applyHdpiOverrides, createHdpiCanvas } from './HdpiCanvas';
 import AnimationQueue from './AnimationQueue';
 import easings from './Easings';
 import {Color} from "d3";
 import scaleLinear, {LinearScale} from "./scale/LinearScale";
 import {BandScale} from "./scale/BandScale";
-import {Axis} from "./Axis";
+import Axis from "./Axis";
+import Image from "./Image";
+import Scene from "./Scene";
 // import './decoratorTest';
 
 document.addEventListener('DOMContentLoaded', main);
@@ -70,7 +72,23 @@ function onDataReady(records: DatePrice[]) {
     // d3Sandbox();
     // setupBarChartNoAxes();
     // showBasicBarChart([32, 12, 27, 17, 23, 28, 16, 14, 20]);
-    testAxis();
+    // testAxis();
+    testImageSprite();
+}
+
+function testImageSprite() {
+    const canvas = createHdpiCanvas(800, 600);
+    canvas.style.border = '1px solid red';
+    document.body.appendChild(canvas);
+    const ctx = canvas.getContext('2d')!;
+    const image = new Image('../data/ag-grid.png');
+    // image.width = 50;
+    // image.height = 50;
+    setTimeout(() => {
+        image.render(ctx);
+    }, 1000);
+
+    const scene = new Scene(document.body);
 }
 
 function testAxis() {
