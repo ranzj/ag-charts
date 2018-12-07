@@ -109,6 +109,7 @@ function testAxis() {
         bottomAxis.lineColor = 'blue';
         bottomAxis.labelColor = 'green';
         bottomAxis.flippedLabels = true;
+        bottomAxis.mirroredLabels = false;
         bottomAxis.render(ctx);
     }
 }

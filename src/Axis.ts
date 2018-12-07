@@ -26,6 +26,7 @@ export class Axis<D> implements IRenderable {
     labelFont: string = '14px Verdana';
     labelColor: string = 'black';
     flippedLabels: boolean = false;
+    mirroredLabels: boolean = false;
 
     /**
      * Normalize the given angle to [0, Math.PI * 2) interval.
@@ -53,29 +54,30 @@ export class Axis<D> implements IRenderable {
             const bandwidth = (scale.bandwidth || 0) / 2;
             const tickCount = ticks.length;
             const pxShift = -this.tickWidth % 2 / 2;
+            const sideFlag = this.mirroredLabels ? 1 : -1;
             ctx.lineWidth = this.tickWidth;
             ctx.strokeStyle = this.tickColor;
             ctx.fillStyle = this.labelColor;
-            ctx.textAlign = 'right';
+            ctx.textAlign = sideFlag === -1 ? 'end' : 'start';
             ctx.textBaseline = 'middle';
             ctx.font = this.labelFont;
             ctx.beginPath();
             for (let i = 0; i < tickCount; i++) {
                 const r = scale.convert(ticks[i]) - this.tickWidth / 2 + bandwidth;
-                ctx.moveTo(-this.tickSize, r + pxShift);
+                ctx.moveTo(sideFlag * this.tickSize, r + pxShift);
                 ctx.lineTo(0, r + pxShift);
                 if (this.flippedLabels) {
                     const rotation = this.normalizeAngle(this.rotation);
-                    let side = (rotation >= 0 && rotation <= Math.PI) ? -1 : 1;
+                    let flipFlag = (rotation >= 0 && rotation <= Math.PI) ? -1 : 1;
 
                     ctx.save();
-                    ctx.translate(-this.tickSize - this.tickPadding, r);
-                    ctx.rotate(side * Math.PI / 2);
+                    ctx.translate(sideFlag * (this.tickSize + this.tickPadding), r);
+                    ctx.rotate(flipFlag * Math.PI / 2);
                     const labelWidth = ctx.measureText(ticks[i].toString()).width;
-                    ctx.fillText(ticks[i].toString(), labelWidth / 2, side * this.tickPadding);
+                    ctx.fillText(ticks[i].toString(), -sideFlag * labelWidth / 2, -sideFlag * flipFlag * this.tickPadding);
                     ctx.restore();
                 } else {
-                    ctx.fillText(ticks[i].toString(), -this.tickSize - this.tickPadding, r);
+                    ctx.fillText(ticks[i].toString(), sideFlag * (this.tickSize + this.tickPadding), r);
                 }
             }
             ctx.stroke();
