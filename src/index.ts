@@ -82,36 +82,46 @@ function testAxis() {
     const leftAxis = new Axis<number>(leftScale);
     leftAxis.translation = [100, 50];
     leftAxis.tickWidth = 1;
-    // axis.rotation = -Math.PI / 6;
-    leftAxis.render(ctx);
 
-    {
-        const bottomScale = scaleLinear();
-        bottomScale.domain = [2, 97];
-        bottomScale.range = [0, 707];
-        const bottomAxis = new Axis<number>(bottomScale);
-        bottomAxis.rotation = -Math.PI / 4;
-        bottomAxis.translation = [100, 50];
-        bottomAxis.tickColor = 'red';
-        bottomAxis.lineColor = 'blue';
-        bottomAxis.labelColor = 'green';
-        bottomAxis.render(ctx);
-    }
+    const topScale = scaleLinear();
+    topScale.domain = [2, 97];
+    topScale.range = [0, 707];
+    const topAxis = new Axis<number>(topScale);
+    topAxis.rotation = -Math.PI / 4;
+    topAxis.translation = [100, 50];
+    topAxis.tickColor = 'red';
+    topAxis.lineColor = 'blue';
+    topAxis.labelColor = 'green';
+    topAxis.mirroredLabels = true;
 
-    {
-        const bottomScale = new BandScale<string>();
-        bottomScale.domain = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
-        bottomScale.range = [0, 500];
-        const bottomAxis = new Axis<string>(bottomScale);
-        bottomAxis.rotation = -Math.PI / 2;
-        bottomAxis.translation = [100, 550];
-        bottomAxis.tickColor = 'red';
-        bottomAxis.lineColor = 'blue';
-        bottomAxis.labelColor = 'green';
-        bottomAxis.flippedLabels = true;
-        bottomAxis.mirroredLabels = false;
+    const bottomScale = new BandScale<string>();
+    bottomScale.domain = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
+    bottomScale.range = [0, 500];
+    const bottomAxis = new Axis<string>(bottomScale);
+    bottomAxis.rotation = -Math.PI / 2;
+    bottomAxis.translation = [100, 550];
+    bottomAxis.tickColor = 'red';
+    bottomAxis.lineColor = 'blue';
+    bottomAxis.labelColor = 'green';
+    bottomAxis.flippedLabels = true;
+    bottomAxis.mirroredLabels = false;
+
+    const scale = new BandScale<string>();
+    scale.domain = ['A', 'B', 'C', 'D', 'E'];
+    scale.range = [0, 200];
+    const axis = new Axis<string>(scale);
+    axis.flippedLabels = true;
+    axis.rotation = 0;
+    axis.translation = [550, 200];
+
+    setInterval(() => {
+        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+        leftAxis.render(ctx);
+        topAxis.render(ctx);
         bottomAxis.render(ctx);
-    }
+        axis.render(ctx);
+        axis.rotation += Math.PI / 180;
+    }, 1000 / 60);
 }
 
 function createCanvasContext2D(width = 800, height = 600): CanvasRenderingContext2D {
