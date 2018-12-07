@@ -25,6 +25,19 @@ export class Axis<D> implements IRenderable {
     tickColor: string = 'black';
     labelFont: string = '14px Verdana';
     labelColor: string = 'black';
+    flippedLabels: boolean = false;
+
+    /**
+     * Normalize the given angle to [0, Math.PI * 2) interval.
+     * @param angle Angle in radians.
+     */
+    normalizeAngle(angle: number): number {
+        const a = Math.PI * 2;
+        angle %= a;
+        angle += a;
+        angle %= a;
+        return angle;
+    }
 
     // To translate or rotate the axis the ctx can be transformed prior to render
     render(ctx: CanvasRenderingContext2D) {
@@ -51,7 +64,19 @@ export class Axis<D> implements IRenderable {
                 const r = scale.convert(ticks[i]) - this.tickWidth / 2 + bandwidth;
                 ctx.moveTo(-this.tickSize, r + pxShift);
                 ctx.lineTo(0, r + pxShift);
-                ctx.fillText(ticks[i].toString(), -this.tickSize - this.tickPadding, r);
+                if (this.flippedLabels) {
+                    const rotation = this.normalizeAngle(this.rotation);
+                    let side = (rotation >= 0 && rotation <= Math.PI) ? -1 : 1;
+
+                    ctx.save();
+                    ctx.translate(-this.tickSize - this.tickPadding, r);
+                    ctx.rotate(side * Math.PI / 2);
+                    const labelWidth = ctx.measureText(ticks[i].toString()).width;
+                    ctx.fillText(ticks[i].toString(), labelWidth / 2, side * this.tickPadding);
+                    ctx.restore();
+                } else {
+                    ctx.fillText(ticks[i].toString(), -this.tickSize - this.tickPadding, r);
+                }
             }
             ctx.stroke();
         }

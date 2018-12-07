@@ -108,6 +108,7 @@ function testAxis() {
         bottomAxis.tickColor = 'red';
         bottomAxis.lineColor = 'blue';
         bottomAxis.labelColor = 'green';
+        bottomAxis.flippedLabels = true;
         bottomAxis.render(ctx);
     }
 }
